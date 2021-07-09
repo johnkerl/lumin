@@ -32,6 +32,7 @@ matching lines.
 
 Options:
 -w                     Restrict matches to word boundaries.
+-i                     Allow for case-insensitive matches.
 -c|--color {name}      Use {name} to highlight matches -- see -l/-n for choices.
                        Example names: red, yellow, green, orchid, 9, 11, 2, 170.
                        You can also set the %s environment variable if you like.
@@ -47,6 +48,7 @@ Options:
 func main() {
 	// Set defaults for options
 	matchOnWordBoundary := false
+	caseInsensitive := false
 	envColorName := os.Getenv(ENV_COLOR_NAME)
 	if envColorName != "" {
 		ok := colors.SetColor(envColorName)
@@ -56,6 +58,8 @@ func main() {
 			os.Exit(1)
 		}
 	}
+
+	os.Args = getoptify(os.Args) // lumin -iw -> lumin -i -w
 
 	// Parse command-line options
 	argi := 1
@@ -73,6 +77,9 @@ func main() {
 
 		} else if opt == "-w" {
 			matchOnWordBoundary = true
+
+		} else if opt == "-i" {
+			caseInsensitive = true
 
 		} else if opt == "-l" || opt == "--list-color-codes" {
 			colors.ListColorCodes()
@@ -115,6 +122,10 @@ func main() {
 		pattern = "\\b" + pattern + "\\b"
 	}
 
+	if caseInsensitive {
+		pattern = "(?i)" + pattern
+	}
+
 	regex, err := regexp.Compile(pattern)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
@@ -134,6 +145,31 @@ func main() {
 	} else {
 		os.Exit(0)
 	}
+}
+
+// ----------------------------------------------------------------
+// getoptify expands "-xyz" into "-x -y -z" while leaving "--xyz" intact. This
+// is a keystroke-saver for the user.
+//
+// Secondly, we split "--foo=bar" into "--foo" and "bar".
+func getoptify(inargs []string) []string {
+	expandRegex := regexp.MustCompile("^-[a-zA-Z0-9]+$")
+	splitRegex := regexp.MustCompile("^--[^=]+=.+$")
+	outargs := make([]string, 0)
+	for _, inarg := range inargs {
+		if expandRegex.MatchString(inarg) {
+			for _, c := range inarg[1:] {
+				outargs = append(outargs, "-"+string(c))
+			}
+		} else if splitRegex.MatchString(inarg) {
+			pair := strings.SplitN(inarg, "=", 2)
+			outargs = append(outargs, pair[0])
+			outargs = append(outargs, pair[1])
+		} else {
+			outargs = append(outargs, inarg)
+		}
+	}
+	return outargs
 }
 
 // ----------------------------------------------------------------
