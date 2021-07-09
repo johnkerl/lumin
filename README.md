@@ -19,3 +19,22 @@ Matching a string:
 Matching a regular expression:
 
 ![screenshot2](./pix/screenshot2.png)
+
+Usage:
+
+```
+Usage: lumin [options] {pattern} [zero or more filenames]
+Highlights matches to {pattern} in the specified files.
+If zero filenames are specified, standard input is read.
+This is like grep with --color, except it shows all lines, not just
+matching lines.
+
+Options:
+-w                     Restrict matches to word boundaries.
+-c|--color {name}      Use {name} to highlight matches -- see -l/-n for choices.
+                       Example names: red, yellow, green, orchid, 9, 11, 2, 170.
+                       You can also set the LUMIN_MATCH_COLOR environment variable if you like.
+-l|--list-color-codes  Show available color codes 0..255.
+-n|--list-color-names  Show available color names (aliases for the 0..255 codes).
+-h|--help              Print this messsage.
+```
