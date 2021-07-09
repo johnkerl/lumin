@@ -20,6 +20,12 @@ Matching a regular expression:
 
 ![screenshot2](./pix/screenshot2.png)
 
+Color choices:
+
+![screenshot3](./pix/screenshot3.png)
+
+![screenshot4](./pix/screenshot4.png)
+
 Usage:
 
 ```
