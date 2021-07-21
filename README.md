@@ -26,6 +26,14 @@ Color choices:
 
 ![screenshot4](./pix/screenshot4.png)
 
+Multi-pattern matching:
+
+![screenshot5](./pix/multi.png)
+
+Multi-color matching:
+
+![screenshot6](./pix/red-blue.png)
+
 On-line help:
 
 ```
