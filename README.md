@@ -53,3 +53,7 @@ Options:
 -n|--list-color-names  Show available color names (aliases for the 0..255 codes).
 -h|--help              Print this messsage.
 ```
+
+Note:
+
+Many programs (`git diff`, `grep` with `--color`, etc. etc.) colorize their output when they detect that standard output is a terminal, and non-colorize when standard output is a file or a pipe. By contrast, `lumin` always colorizes, since colorization is its one and only job. This is what makes `lumin -c red foo myfile.txt | lumin -c blue bar` work.
