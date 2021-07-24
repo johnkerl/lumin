@@ -114,6 +114,7 @@ func main() {
 	if argi >= argc {
 		fmt.Fprintf(os.Stderr, "%s: need search pattern as argument.\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "See %s -h for help.\n", os.Args[0])
+		os.Exit(1)
 	}
 	pattern := os.Args[argi]
 	filenames := os.Args[argi+1:]
