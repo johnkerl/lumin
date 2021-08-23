@@ -38,6 +38,8 @@ Options:
                        You can also set the %s environment variable if you like.
 -l|--list-color-codes  Show available color codes 0..255.
 -n|--list-color-names  Show available color names (aliases for the 0..255 codes).
+--                     Signify end of options, so next argument is the pattern.
+                       E.g. to search for "-x" in file foo.txt, use "lumin -- -x foo.txt".
 -h|--help              Print this messsage.
 `,
 		os.Args[0], ENV_COLOR_NAME,
@@ -71,6 +73,9 @@ func main() {
 			break // No more flag options to process
 		}
 		argi++
+		if opt == "--" {
+			break // Let people search for things starting with a dash via "lumin -- -x filename.txt"
+		}
 
 		if opt == "-h" || opt == "--help" {
 			usage(os.Stdout, 0)
