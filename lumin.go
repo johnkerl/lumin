@@ -175,21 +175,13 @@ func getoptify(inargs []string) []string {
 
 // ----------------------------------------------------------------
 func luminStream(regex *regexp.Regexp, istream io.Reader) error {
-	reader := bufio.NewReader(istream)
-	eof := false
+	scanner := bufio.NewScanner(istream)
 
-	for !eof {
-		line, err := reader.ReadString('\n')
-		if err == io.EOF {
-			err = nil
-			eof = true
-		} else if err != nil {
-			return err
-		} else {
-			// This is how to do a chomp:
-			line = strings.TrimRight(line, "\n")
-			fmt.Println(luminLine(regex, line))
-		}
+	for scanner.Scan() {
+		line := scanner.Text()
+		// This is how to do a chomp:
+		line = strings.TrimRight(line, "\n")
+		fmt.Println(luminLine(regex, line))
 	}
 
 	return nil
