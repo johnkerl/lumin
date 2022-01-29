@@ -21,6 +21,18 @@ import (
 
 const ENV_COLOR_NAME = "LUMIN_MATCH_COLOR"
 
+// Default escape sequence to start colorization
+var highlightStartString string
+
+func init() {
+	var ok bool
+	highlightStartString, ok = colors.MakeANSIEscapesFromName("196")
+	if !ok {
+		fmt.Fprintf(os.Stderr, "lumin: internal coding error detected.\n")
+		os.Exit(1)
+	}
+}
+
 // ----------------------------------------------------------------
 func usage(ostream *os.File, exitCode int) {
 	fmt.Fprintf(ostream,
@@ -53,7 +65,7 @@ func main() {
 	caseInsensitive := false
 	envColorName := os.Getenv(ENV_COLOR_NAME)
 	if envColorName != "" {
-		ok := colors.SetColor(envColorName)
+		ok := setColor(envColorName)
 		if !ok {
 			fmt.Fprintf(os.Stderr, "%s: color \"%s\" not found.\n", os.Args[0], envColorName)
 			fmt.Fprintf(os.Stderr, "See %s -h for help.\n", os.Args[0])
@@ -101,7 +113,7 @@ func main() {
 				os.Exit(1)
 			}
 			colorName := os.Args[argi]
-			ok := colors.SetColor(colorName)
+			ok := setColor(colorName)
 			if !ok {
 				fmt.Fprintf(os.Stderr, "%s: color \"%s\" not found.\n", os.Args[0], colorName)
 				fmt.Fprintf(os.Stderr, "See %s -h for help.\n", os.Args[0])
@@ -151,6 +163,18 @@ func main() {
 	} else {
 		os.Exit(0)
 	}
+}
+
+func setColor(name string) bool {
+    escape, ok := colors.MakeANSIEscapesFromName(name)
+    if ok {
+        highlightStartString = escape
+    }
+    return ok
+}
+
+func colorize(input string) string {
+	return highlightStartString + input + colors.DefaultColorString
 }
 
 // ----------------------------------------------------------------
@@ -221,7 +245,7 @@ func luminLine(regex *regexp.Regexp, input string) string {
 
 	for _, startEnd := range matrix {
 		buffer.WriteString(input[nonMatchStartIndex:startEnd[0]])
-		buffer.WriteString(colors.Colorize(input[startEnd[0]:startEnd[1]]))
+		buffer.WriteString(colorize(input[startEnd[0]:startEnd[1]]))
 		nonMatchStartIndex = startEnd[1]
 	}
 

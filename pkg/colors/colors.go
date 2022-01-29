@@ -9,20 +9,20 @@ package colors
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
-// Escape sequence to start colorization
-var highlightStartString = makeColorString(196)
-
 // Escape sequence to end colorization
-const defaultColorString = "\033[0m"
+const DefaultColorString = "\033[0m"
 
-// ----------------------------------------------------------------
+// ================================================================
+// Externally visible API
+
 // ListColorCodes shows codes in the range 0..255.
 func ListColorCodes() {
 	fmt.Println("Available color codes:")
 	for i := 0; i <= 255; i++ {
-		fmt.Printf("%s%3d%s", makeColorString(i), i, defaultColorString)
+		fmt.Printf("%s%3d%s", makeColorString(i), i, DefaultColorString)
 		if i%16 < 15 {
 			fmt.Print(" ")
 		} else {
@@ -37,27 +37,46 @@ func ListColorNames() {
 	for _, pair := range namesAndCodes {
 		fmt.Printf(
 			"%s%-20s%s %d\n",
-			makeColorString(pair.code), pair.name, defaultColorString, pair.code,
+			makeColorString(pair.code), pair.name, DefaultColorString, pair.code,
 		)
 	}
 }
 
-// For lumin's -c.
-func SetColor(name string) bool {
-	code, ok := makeColorCodeFromName(name)
-	if !ok {
-		return false
+// MakeANSIEscapesFromName takes several pieces delimited by "-", e.g.  "bold-red" or "red-bold" or
+// "underline-236".
+func MakeANSIEscapesFromName(name string) (string, bool) {
+	namePieces := strings.Split(name, "-")
+	escapePieces := make([]string, len(namePieces))
+	for i := range namePieces {
+		escapePiece, ok := makeANSIEscapeFromName(namePieces[i])
+		if !ok {
+			return "", false
+		}
+		escapePieces[i] = escapePiece
 	}
-	highlightStartString = makeColorString(code)
-	return true
+	return strings.Join(escapePieces, ""), true
 }
 
-// For lumin's line-processing.
-func Colorize(input string) string {
-	return highlightStartString + input + defaultColorString
+// makeANSIEscapeFromName operates on a single piece from makeANSIEscapesFromName, e.g. the "bold",
+// "red", etc.
+func makeANSIEscapeFromName(name string) (string, bool) {
+	if name == "plain" {
+		return "", true
+	} else if name == "bold" || name == "bolded" {
+		return boldString, true
+	} else if name == "underline" || name == "underlined" {
+		return underlineString, true
+	} else if name == "reverse" || name == "reversed" {
+		return reversedString, true
+	} else {
+		code, ok := makeColorCodeFromName(name)
+		if ok {
+			return makeColorString(code), true
+		} else {
+			return "", false
+		}
+	}
 }
-
-// ----------------------------------------------------------------
 
 // makeColorString constructs an ANSI-16-color-mode escape sequence if arg is
 // in 0..15, else ANSI-256-color-mode escape sequence
@@ -108,12 +127,16 @@ func make256ColorString(i int) string {
 //
 // This is intentionally an array, not a map.
 //
-// Map would be more efficient for lookup but maps do not preserve
+// A map would be more efficient for lookup but maps do not preserve
 // insertion-ordering in Go -- so, doing 'list colors' would print them in a
 // random order. To do nice 'list colors' we'd have to put them in this kind of
 // array and sort anyway. Also, lookups are done exactly once at program start
 // -- so, it's more efficient to make this an array with lookup by search, than
-// to populate a hash-map (computing hashcodes) for a use-once hash lookup.
+// to populate a hash-map (computing hashcodes) for a use-only-once hash lookup.
+
+const boldString = "\u001b[1m"
+const underlineString = "\u001b[4m"
+const reversedString = "\u001b[7m"
 
 type tNameAndCode struct {
 	name string
