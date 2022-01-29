@@ -58,7 +58,7 @@ func MakeANSIEscapesFromName(name string) (string, bool) {
 	return strings.Join(escapePieces, ""), true
 }
 
-// makeANSIEscapesFromNameUnconditionally is for hard-coded defaults within this source file.
+// MakeANSIEscapesFromNameUnconditionally is for hard-coded defaults within this source file.
 func MakeANSIEscapesFromNameUnconditionally(name string) string {
 	escape, ok := MakeANSIEscapesFromName(name)
 	if !ok {
