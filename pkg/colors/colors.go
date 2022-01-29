@@ -8,6 +8,7 @@ package colors
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -55,6 +56,15 @@ func MakeANSIEscapesFromName(name string) (string, bool) {
 		escapePieces[i] = escapePiece
 	}
 	return strings.Join(escapePieces, ""), true
+}
+
+// makeANSIEscapesFromNameUnconditionally is for hard-coded defaults within this source file.
+func MakeANSIEscapesFromNameUnconditionally(name string) string {
+	escape, ok := MakeANSIEscapesFromName(name)
+	if !ok {
+		fmt.Fprintf(os.Stderr, "internal coding error in colorizer initialization.\n")
+	}
+	return escape
 }
 
 // makeANSIEscapeFromName operates on a single piece from makeANSIEscapesFromName, e.g. the "bold",

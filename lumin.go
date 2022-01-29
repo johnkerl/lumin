@@ -22,16 +22,7 @@ import (
 const ENV_COLOR_NAME = "LUMIN_MATCH_COLOR"
 
 // Default escape sequence to start colorization
-var highlightStartString string
-
-func init() {
-	var ok bool
-	highlightStartString, ok = colors.MakeANSIEscapesFromName("196")
-	if !ok {
-		fmt.Fprintf(os.Stderr, "lumin: internal coding error detected.\n")
-		os.Exit(1)
-	}
-}
+var highlightStartString = colors.MakeANSIEscapesFromNameUnconditionally("196")
 
 // ----------------------------------------------------------------
 func usage(ostream *os.File, exitCode int) {
