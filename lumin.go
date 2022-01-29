@@ -15,8 +15,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/johnkerl/lumin/src/argf"
-	"github.com/johnkerl/lumin/src/colors"
+	"github.com/johnkerl/lumin/internal/pkg/argf"
+	"github.com/johnkerl/lumin/pkg/colors"
 )
 
 const ENV_COLOR_NAME = "LUMIN_MATCH_COLOR"
