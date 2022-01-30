@@ -52,9 +52,13 @@ Options:
 -i                     Allow for case-insensitive matches.
 -c|--color {name}      Use {name} to highlight matches -- see -l/-n for choices.
                        Example names: red, yellow, green, orchid, 9, 11, 2, 170.
+                       You can also use bold, underline, and reverse. As well,
+                       combinations of these joined with a -, such as bold-red,
+                       bold-underline, red-underline, etc.
                        You can also set the LUMIN_MATCH_COLOR environment variable if you like.
 -l|--list-color-codes  Show available color codes 0..255.
--n|--list-color-names  Show available color names (aliases for the 0..255 codes).
+-n|--list-color-names  Show available color names (aliases for the 0..255 codes)
+                       along with bold, underline, reverse, and combinations.
 --                     Signify end of options, so next argument is the pattern.
                        E.g. to search for "-x" in file foo.txt, use "lumin -- -x foo.txt".
 -h|--help              Print this messsage.

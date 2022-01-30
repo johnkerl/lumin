@@ -35,6 +35,9 @@ func ListColorCodes() {
 // ListColorNames shows names for codes in the range 0..255.
 func ListColorNames() {
 	fmt.Println("Available color names:")
+	fmt.Printf("%s%s%s\n", MakeANSIEscapesFromNameUnconditionally("bold"), "bold", DefaultColorString)
+	fmt.Printf("%s%s%s\n", MakeANSIEscapesFromNameUnconditionally("underline"), "underline", DefaultColorString)
+	fmt.Printf("%s%s%s\n", MakeANSIEscapesFromNameUnconditionally("reverse"), "reverse", DefaultColorString)
 	for _, pair := range namesAndCodes {
 		fmt.Printf(
 			"%s%-20s%s %d\n",
