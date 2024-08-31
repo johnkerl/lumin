@@ -38,6 +38,10 @@ Matching on blankspace:
 
 ![screenshot7](./pix/blankspace.png)
 
+Highlighting full lines on a match:
+
+![screenshot7](./pix/full-line.png)
+
 Note:
 
 Many programs (`git diff`, `grep` with `--color`, etc. etc.) colorize their output when they detect that standard output is a terminal, and non-colorize when standard output is a file or a pipe. By contrast, `lumin` always colorizes, since colorization is its one and only job. This is what makes `lumin -c red foo myfile.txt | lumin -c blue bar` work.
@@ -54,6 +58,7 @@ matching lines.
 Options:
 -w                     Restrict matches to word boundaries.
 -i                     Allow for case-insensitive matches.
+-f|--full-lines        Highlight entire lines on a match. Incompatible with -w.
 -c|--color {name}      Use {name} to highlight matches -- see -l/-n for choices.
                        Example names: red, yellow, green, orchid, 9, 11, 2, 170.
                        You can also use bold, underline, and reverse. As well,
