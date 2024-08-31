@@ -36,6 +36,7 @@ matching lines.
 Options:
 -w                     Restrict matches to word boundaries.
 -i                     Allow for case-insensitive matches.
+-f|--full-lines        Highlight entire lines on a match. Incompatible with -w.
 -c|--color {name}      Use {name} to highlight matches -- see -l/-n for choices.
                        Example names: red, yellow, green, orchid, 9, 11, 2, 170.
                        You can also use bold, underline, and reverse. As well,
@@ -58,6 +59,7 @@ func main() {
 	// Set defaults for options
 	matchOnWordBoundary := false
 	caseInsensitive := false
+	highlightFullLines := false
 	envColorName := os.Getenv(ENV_COLOR_NAME)
 	if envColorName != "" {
 		ok := setColor(envColorName)
@@ -92,6 +94,9 @@ func main() {
 
 		} else if opt == "-i" {
 			caseInsensitive = true
+
+		} else if opt == "-f" || opt == "--full-lines" {
+			highlightFullLines = true
 
 		} else if opt == "-l" || opt == "--list-color-codes" {
 			colors.ListColorCodes()
@@ -131,8 +136,18 @@ func main() {
 	pattern := os.Args[argi]
 	filenames := os.Args[argi+1:]
 
+	if matchOnWordBoundary && highlightFullLines {
+		fmt.Fprintf(os.Stderr, "%s: -f and -w are incompatible.\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "See %s -h for help.\n", os.Args[0])
+		os.Exit(1)
+	}
+
 	if matchOnWordBoundary {
 		pattern = "\\b" + pattern + "\\b"
+	}
+
+	if highlightFullLines {
+		pattern = ".*" + pattern + ".*"
 	}
 
 	if caseInsensitive {
