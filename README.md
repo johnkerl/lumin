@@ -65,5 +65,5 @@ Options:
                        along with bold, underline, reverse, and combinations.
 --                     Signify end of options, so next argument is the pattern.
                        E.g. to search for "-x" in file foo.txt, use "lumin -- -x foo.txt".
--h|--help              Print this messsage.
+-h|--help              Print this message.
 ```
