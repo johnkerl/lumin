@@ -1,16 +1,13 @@
 # lumin
 
+## What lumin does
+
 `lumin` is a simple command-line program which highlights matches to a
 specified pattern (string or regex) in the specified files. This is like `grep`
 with `--color`, except that `lumin` shows all lines, not just matching lines.
 
 This uses ANSI 256-color escape sequences which work on Linux/Unix systems,
 BSD-like systems, MacOS, etc., but typically not Windows.
-
-To build the `lumin` executable:
-
-- Install Go
-- `go build`
 
 Matching a string:
 
@@ -46,7 +43,9 @@ Note:
 
 Many programs (`git diff`, `grep` with `--color`, etc. etc.) colorize their output when they detect that standard output is a terminal, and non-colorize when standard output is a file or a pipe. By contrast, `lumin` always colorizes, since colorization is its one and only job. This is what makes `lumin -c red foo myfile.txt | lumin -c blue bar` work.
 
-On-line help:
+## On-line help
+
+`lumin --help`
 
 ```
 Usage: lumin [options] {pattern} [zero or more filenames]
@@ -72,3 +71,22 @@ Options:
                        E.g. to search for "-x" in file foo.txt, use "lumin -- -x foo.txt".
 -h|--help              Print this message.
 ```
+
+## Building from source
+
+- First:
+  - `cd /where/you/want/to/put/the/source`
+  - `git clone https://github.com/johnkerl/lumin`
+  - `cd lumin`
+  - Install Go if you have not already
+- Without `make`:
+  - Type `go build`
+  - To install: `go install github.com/johnkerl/miller/v6/cmd/lumin@latest` will install to
+    _GOPATH_`/bin/lumin`.
+- With `make`:
+  - To build: `make`. This takes just a few seconds and produces the lumin executable, which is
+    `./lumin` (or `.\lumin.exe` on Windows).
+  - To install: `make install`. This installs the executable `/usr/local/bin/lumin` and manual page
+    `/usr/local/share/man/man1/mlr.1` (so you can do `man mlr`).
+  - You can do `./configure --prefix=/some/install/path` before `make install` if you want to
+    install somewhere other than `/usr/local`.
