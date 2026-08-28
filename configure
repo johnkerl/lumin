@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -euo pipefail
+
+usage() {
+  echo "Usage: $0 [--prefix {prefix directory}], e.g. /usr/local" 2>&1
+  echo "    or $0 [--prefix={prefix directory}], e.g. /usr/local" 2>&1
+  exit 1
+}
+
+prefix="/usr/local"
+
+if [ $# -eq 0 ]; then
+  echo "Using $prefix"
+elif [ $# -gt 2 ]; then
+  usage
+else
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -p=* | --prefix=*)
+        prefix="${1#*=}"
+        ;;
+      -p | --prefix)
+        prefix="$2"
+        shift
+        ;;
+      *)
+        printf "Error: unknown option: $1\n"
+        usage
+    esac
+    shift
+  done
+fi
+
+# Test for read access, not write access, since people can ./configure, make,
+# and make check outside of sudo and then make install inside sudo.
+if [ ! -d "$prefix" ]; then
+  echo "$0: could not find prefix directory \"$prefix\""
+  exit 1
+fi
+
+ext=".prefix-backup"
+sed 's@^PREFIX.*@PREFIX='$prefix'@' Makefile > Makefile.$ext
+mv Makefile.$ext Makefile
+echo Updated Makefile
